@@ -1,0 +1,8 @@
+{
+  "name": "node-meme-scraper",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/emesekiss/node-meme-scraper.git",
+  "author": "Emese Kiss <emesekiss92@yahoo.com>",
+  "license": "MIT"
+}
