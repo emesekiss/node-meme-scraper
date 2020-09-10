@@ -47,25 +47,3 @@ let arrImageNames = [
 for (i = 0; i < 10; i++) {
   download(allImageUrl[i], arrImageNames[i], () => {});
 }
-
-//   const download = (allImageUrl[i], arrImageNames[i]) =>{
-//     .image(options)
-//     .then(({ filename }) => {
-//       console.log('Saved to', filename); // saved to /path/to/dest/image.jpg
-//     })
-//     .catch((err) => console.error(err));
-// }}
-
-// allImageUrl.forEach((imageUrl) => {
-//   const options = {
-//     url: imageUrl,
-//     dest: `./meme`, // will be saved to /path/to/dest/image.jpg
-//   };
-
-//   download
-//     .image(options)
-//     .then(({ filename }) => {
-//       console.log('Saved to', filename); // saved to /path/to/dest/image.jpg
-//     })
-//     .catch((err) => console.error(err));
-// });
