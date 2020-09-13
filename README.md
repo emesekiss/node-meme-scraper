@@ -1,4 +1,4 @@
-Node.js Meme Scraper
+# Node.js Meme Scraper
 
 Created a cli (Command Line Interface) application (that uses the command line) that scrapes this website:
 
