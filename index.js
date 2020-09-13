@@ -1,17 +1,17 @@
+const rp = require('request-promise');
+const cheerio = require('cheerio');
 const fs = require('fs');
 const request = require('request');
 
-// This function creates a new directory named 'meme', if it already exists it shows error. source : https://coderrocketfuel.com/article/create-a-new-directory-in-node-js
+// 1. **** Access the website (given by the url variable) to retrieve the HTML source code -- using request-promise library
 
-fs.mkdir('./meme', function (err) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log('New directory successfully created.');
-  }
-});
+// 2. ***** To find the src within the meme-img class **** (-- allImages variable) I need to use cheerio library
 
-//***** This downloads an image from the links given by an array  ********/
+// 3. **** To create a for loop function to download the first 10 images.
+
+const url = 'https://memegen.link/examples';
+
+const imageApiUrl = 'https://api.memegen.link/images';
 
 const download = (url, path, callback) => {
   request.head(url, (err, res, body) => {
@@ -19,31 +19,30 @@ const download = (url, path, callback) => {
   });
 };
 
-let allImageUrl = [
-  `https://api.memegen.link/images/bender/your_text/goes_here.jpg?preview=true&watermark=none`,
-  `https://api.memegen.link/images/tenguy/your_text/goes_here.jpg?preview=true&watermark=none`,
-  `https://memegen.link/afraid/i_don't_know_what_this_meme_is_for/and_at_this_point_i'm_too_afraid_to_ask.jpg?preview=true&watermark=none&share=true`,
-  `https://api.memegen.link/images/apcr/your_text/goes_here.jpg?preview=true&watermark=none`,
-  `https://api.memegen.link/images/older/it's_an_older_meme_sir/but_it_checks_out.jpg?preview=true&watermark=none`,
-  `https://api.memegen.link/images/aag/_/aliens.jpg?preview=true&watermark=none`,
-  `https://api.memegen.link/images/atis/and_then_i_said/the_exam_will_only_contain_what_we've_covered_in_lectures.jpg?preview=true&watermark=none`,
-  `https://api.memegen.link/images/tried/at_least/you_tried.jpg?preview=true&watermark=none`,
-  `https://api.memegen.link/images/biw/gets_iced_coffee/in_the_winter.jpg?preview=true&watermark=none`,
-  `https://api.memegen.link/images/stew/_/baby,_you've_got_a_stew_going!.jpg?preview=true&watermark=none`,
-];
-let arrImageNames = [
-  './meme/1.jpg',
-  './meme/2.jpg',
-  './meme/3.jpg',
-  './meme/4.jpg',
-  './meme/5.jpg',
-  './meme/6.jpg',
-  './meme/7.jpg',
-  './meme/8.jpg',
-  './meme/9.jpg',
-  './meme/10.jpg',
-];
+fs.mkdir('./meme', (err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('New directory successfully created.');
+  }
+});
 
-for (i = 0; i < 10; i++) {
-  download(allImageUrl[i], arrImageNames[i], () => {});
-}
+rp(url)
+  .then((html) => {
+    const allImages = cheerio('.meme-img', html);
+
+    for (let i = 0; i < 10; i++) {
+      download(
+        imageApiUrl + allImages[i].attribs.src,
+        `./meme/${i}.jpg`,
+        () => {
+          console.log(`downloaded ${i}.jpg`);
+        },
+      );
+    }
+    return;
+  })
+  .catch((err) => {
+    //handle error
+    console.log(err);
+  });
