@@ -1,4 +1,3 @@
-const rp = require('request-promise');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const request = require('request');
@@ -9,7 +8,7 @@ const request = require('request');
 
 // 3. **** To create a for loop function to download the first 10 images.
 
-const url = 'https://memegen.link/examples';
+const originUrl = 'https://memegen.link/examples';
 
 const imageApiUrl = 'https://api.memegen.link/images';
 
@@ -21,28 +20,23 @@ const download = (url, path, callback) => {
 
 fs.mkdir('./meme', (err) => {
   if (err) {
-    console.log(err);
+    console.log(`The 'meme' directory already exists.`);
   } else {
     console.log('New directory successfully created.');
   }
 });
 
-rp(url)
-  .then((html) => {
-    const allImages = cheerio('.meme-img', html);
-
-    for (let i = 0; i < 10; i++) {
-      download(
-        imageApiUrl + allImages[i].attribs.src,
-        `./meme/${i}.jpg`,
-        () => {
-          console.log(`downloaded ${i}.jpg`);
-        },
-      );
-    }
-    return;
-  })
-  .catch((err) => {
-    //handle error
-    console.log(err);
-  });
+request(originUrl, (error, response, body) => {
+  if (error) {
+    console.error(error);
+  }
+  const allImages = cheerio('.meme-img', body);
+  for (let i = 0; i < 10; i++) {
+    download(
+      imageApiUrl + allImages[i].attribs.src,
+      `./meme/${i}.jpg`,
+      () => {},
+    );
+    console.log(`downloaded ${i}.jpg`);
+  }
+});
